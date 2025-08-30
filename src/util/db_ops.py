@@ -3,6 +3,7 @@ import psycopg2
 import pandas as pd
 import numpy as np
 from dotenv import load_dotenv
+from typing import Optional
 
 load_dotenv()
 
@@ -15,10 +16,10 @@ class MLDatabaseOps:
     def connect(self):
         """Connect to PostgreSQL using environment variables."""
         self.conn = psycopg2.connect(
-            host=os.getenv("POSTGRES_HOST_DEV" , "POSTGRES_HOST_DEV"),
-            database=os.getenv("POSTGRES_DB_DEV" , "POSTGRES_DB_DEV"),
-            user=os.getenv("POSTGRES_USER_DEV" , "POSTGRES_USER_DEV"),
-            password=os.getenv("POSTGRES_PASSWORD_DEV" , "POSTGRES_PASSWORD_DEV"),
+            host=os.getenv("POSTGRES_HOST" , "POSTGRES_HOST_DEV"),
+            database=os.getenv("POSTGRES_DB" , "POSTGRES_DB_DEV"),
+            user=os.getenv("POSTGRES_USER" , "POSTGRES_USER_DEV"),
+            password=os.getenv("POSTGRES_PASSWORD" , "POSTGRES_PASSWORD_DEV"),
             port=os.getenv("POSTGRES_PORT" , "POSTGRES_PORT_DEV")
         )
 
@@ -48,6 +49,7 @@ class MLDatabaseOps:
             INSERT INTO predictions (
                 datetime, predicted_consumption_mwh, model_version, prediction_generated_at, confidence_score, prediction_horizon_hours
             ) VALUES (%s, %s, %s, NOW(), %s, %s)
+            ON CONFLICT (datetime, model_version, prediction_horizon_hours) DO NOTHING
             """,
             (
                 forecast_datetime,
@@ -138,9 +140,9 @@ class MLDatabaseOps:
             self.conn.commit()
 
 
-    def score_any_ready_hours(self, model_version: str | None = None,
-                            horizon_hours: int | None = 1,
-                            watermark_minutes: int = 30):
+    def score_any_ready_hours(self, model_version: Optional[str] = None,
+                              horizon_hours: Optional[int] = 1,
+                              watermark_minutes: int = 30):
         """
         Fill per-hour metrics in evaluation_metrics for hours where we have truth.
         - evaluation_metrics must have UNIQUE(evaluation_date, model_version)
