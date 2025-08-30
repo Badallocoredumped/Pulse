@@ -58,6 +58,7 @@ class ForecastEvaluator:
         end_datetime = forecast_datetime
 
         print(f"📊 Evaluating prediction for {forecast_datetime} (horizon: {horizon} hours)...")
+        print(f"📊 Evaluation period: {start_datetime} to {end_datetime}")
 
         # Fetch actuals and predictions for the evaluation period
         actuals_df = self.db.fetch_consumption(start_datetime, end_datetime)
@@ -65,13 +66,22 @@ class ForecastEvaluator:
 
         # Ensure alignment of actuals and predictions
         merged_df = actuals_df.merge(predictions_df, on="datetime", suffixes=("_actual", "_predicted"))
+        if merged_df.empty:
+            print("⚠️ No matching data found between actuals and predictions. Evaluation skipped.")
+            return None
+
         actuals = merged_df["consumption_mwh"].values
         predictions = merged_df["predicted_consumption_mwh"].values
+
+        # Check if actuals or predictions are empty
+        if len(actuals) == 0 or len(predictions) == 0:
+            print("⚠️ Actuals or predictions are empty. Evaluation skipped.")
+            return None
 
         # Calculate metrics
         print("📈 Calculating evaluation metrics...")
         metrics = self.calculate_metrics(actuals, predictions)
-        metrics["actuals"] = actuals  # Add actuals for data points count
+        metrics["data_points_count"] = len(actuals)  # Add data points count
 
         # Store metrics in the database
         print("💾 Storing evaluation metrics in the database...")
