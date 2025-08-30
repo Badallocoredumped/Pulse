@@ -166,6 +166,25 @@ Pulse provides **Grafana-powered dashboards**:
 ### DevOps & Deployment  
 - **Docker** – Containerization for portability  
 - **Docker Compose** – Multi-service orchestration (pipeline + database + Grafana)
+
+- ## Performance Overview
+
+### Lab (Historical Test)
+- **MAE** ≈ 466 MWh  
+- **RMSE** ≈ 704 MWh  
+- **MAPE** ≈ 1.14% — strong performance on in-distribution data.
+<p align="center">
+  <img src="/docs/output.png" width="900">
+</p>
+<p align="center">
+  <img src="/docs/3.png" width="400">
+</p>
+  
+
+### Live Production (Aug 29–30 Run)
+- MAPE stayed low (~5%) initially but **spiked above 20%** around Aug 30, before settling to elevated levels (~5–15%).
+- This reflects **real-world anomalies**—such as abrupt demand drops or unexpected events—not represented in training data.
+  
   
 ## Grafana Dashboards
 <p align="center">
