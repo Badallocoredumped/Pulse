@@ -34,8 +34,8 @@ logging.info("🚀 Performing an initial run of the forecast pipeline...")
 run_forecast_pipeline()
 
 # Schedule the pipeline to run every hour at the 7th minute
-#schedule.every().hour.at(":07").do(run_forecast_pipeline)
-schedule.every(1).minutes.do(run_forecast_pipeline)
+schedule.every().hour.at(":07").do(run_forecast_pipeline)
+#schedule.every(1).minutes.do(run_forecast_pipeline)
 
 
 logging.info("🔄 Scheduler started. Waiting for the 7th minute of every hour...")
