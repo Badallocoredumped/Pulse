@@ -1,6 +1,6 @@
-# ⚡️ neutrinoPulse  
+# ⚡️ Pulse  
 
-**neutrinoPulse** is a machine learning pipeline that forecasts **hourly energy consumption** using a custom-trained LSTM model.  
+**Pulse** is a machine learning pipeline that forecasts **hourly energy consumption** using a custom-trained LSTM model.  
 It stores results in PostgreSQL, runs automatically on a schedule, and visualizes predictions in Grafana dashboards.  
 
 ---
@@ -113,7 +113,7 @@ Training scripts and configs are included in the repo for reproducibility.
 ---
 
 ## 📊 Dashboards  
-Neutrino provides **Grafana-powered dashboards**:  
+Pulse provides **Grafana-powered dashboards**:  
 - Predictions vs. actuals  
 - Rolling error metrics (MAE, MAPE)  
 
