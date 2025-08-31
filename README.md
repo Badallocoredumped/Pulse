@@ -5,8 +5,6 @@ It stores results in PostgreSQL, runs automatically on a schedule, and visualize
 
 ---
 
-
-
 ```mermaid
 flowchart TB
     subgraph AUTOMATION["🤖 Automation Layer"]
@@ -82,7 +80,7 @@ flowchart TB
 ```
 
 ## ✨ Features  
-- 🧠 **Custom LSTM model** trained on ~4 years of historical data (not a premade model)  
+- 🧠 **Custom LSTM model** trained on ~4 years of historical data from EPİAŞ (not a premade model)  
 - ⏳ **Forecasts**: Uses the last 24 hours to predict the next 1 hour  
 - 🔄 **Automated pipeline**: Runs every hour (at minute 7)  
 - 🗄️ **PostgreSQL integration**: Saves predictions, actuals, and error metrics (MAE, RMSE, MAPE)  
@@ -101,7 +99,7 @@ flowchart TB
 ---
 
 ## 🏋️ Model Training  
-The LSTM model was trained **offline** on ~4 years of energy consumption data.  
+The LSTM model was trained **offline** on ~4 years of energy consumption data from EPİAŞ.  
 
 - Framework: **PyTorch**  
 - Input: 24h sliding window  
