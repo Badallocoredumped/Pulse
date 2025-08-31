@@ -49,7 +49,11 @@ class MLDatabaseOps:
             INSERT INTO predictions (
                 datetime, predicted_consumption_mwh, model_version, prediction_generated_at, confidence_score, prediction_horizon_hours
             ) VALUES (%s, %s, %s, NOW(), %s, %s)
-            ON CONFLICT (datetime, model_version, prediction_horizon_hours) DO NOTHING
+            ON CONFLICT (datetime, model_version, prediction_horizon_hours)
+            DO UPDATE SET
+                predicted_consumption_mwh = EXCLUDED.predicted_consumption_mwh,
+                confidence_score = EXCLUDED.confidence_score,
+                prediction_generated_at = NOW() 
             """,
             (
                 forecast_datetime,

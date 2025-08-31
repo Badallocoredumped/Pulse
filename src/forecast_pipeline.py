@@ -1,5 +1,7 @@
 import sys
 import os
+
+import backfill_missing_data
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import torch
@@ -50,6 +52,14 @@ if __name__ == "__main__":
     model_path = models_dir / "best_energy_model.pth"
     model = load_model(EnergyLSTM, model_path, device)
     print("✅ Model loaded successfully.")
+
+   # --- Backfill missing data ---
+    print("🔄 Backfilling missing data...")
+    try:
+        backfill_missing_data.main()
+        print("✅ Missing data backfilled.")
+    except Exception as e:
+        print(f"❌ Backfill failed: {e}")
 
     # --- Forecast next hour ---
     print("📊 Fetching the last 24 hours of data for prediction...")

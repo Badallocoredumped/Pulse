@@ -12,7 +12,7 @@ from model.model_definitions import EnergyLSTM
 from model.data_processor import EnergyDataProcessor
 from util.db_ops import MLDatabaseOps
 
-MODEL_VERSION = "v1"           # or "v1-backfill" if you want to keep backfill separate
+MODEL_VERSION = "v1"           
 HORIZON_HOURS = 1
 SEQ_LEN = 24
 
@@ -34,8 +34,8 @@ def main():
     db.connect()
     print("✅ DB connected")
 
-    # --- Load full history (your fetch_consumption() already used earlier for scaler) ---
-    # Expecting a DataFrame with columns: ['datetime','consumption_mwh'], sorted or not.
+    # --- Load full history ---
+    
     hist = db.fetch_consumption()
     if hist is None or hist.empty:
         print("❌ No historical data found, aborting.")
@@ -61,13 +61,13 @@ def main():
 
     # --- Iterate through hours and predict T from [T-24h, T-1h] ---
     vals = hist["consumption_mwh"].astype(float).values
-    times = hist["datetime"].values  # pandas datetimes
+    times = hist["datetime"].values  
 
     made = 0
     skipped = 0
 
     for i in range(SEQ_LEN, len(hist)):
-        T = pd.Timestamp(times[i])  # target hour with truth available
+        T = pd.Timestamp(times[i])  
         window = vals[i-SEQ_LEN:i]  # strictly the previous 24 hours
 
         # Basic quality check on the window
@@ -79,17 +79,16 @@ def main():
         yhat = float(predict_next_hour(model, window, processor.scaler, device))
 
         # Write/Upsert prediction for exactly T
-        # Your db.store_forecast already matches predictions(datetime, predicted_consumption_mwh, model_version, ...)
         db.store_forecast(
             forecast=yhat,
-            forecast_datetime=T,                    # target timestamp
+            forecast_datetime=T,                    
             model_version=MODEL_VERSION,
             confidence_score=None,
             horizon=HORIZON_HOURS
         )
         made += 1
 
-        # (Optional) tiny progress print every N rows
+        # --- Tiny progress print ---
         if made % 500 == 0:
             print(f"… wrote {made} predictions so far (up to {T})")
 

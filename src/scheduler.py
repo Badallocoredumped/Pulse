@@ -30,15 +30,15 @@ def run_forecast_pipeline():
         logging.error(f"❌ Error while running forecast pipeline: {e}")
 
 
-logging.info("🚀 Performing an initial run of the forecast pipeline...")
-run_forecast_pipeline()
+""" logging.info("🚀 Performing an initial run of the forecast pipeline...")
+run_forecast_pipeline() """
 
-# Schedule the pipeline to run every hour at the 7th minute
-schedule.every().hour.at(":07").do(run_forecast_pipeline)
+# Schedule the pipeline to run every hour at the 15th minute
+schedule.every().hour.at(":15").do(run_forecast_pipeline)
 #schedule.every(1).minutes.do(run_forecast_pipeline)
 
 
-logging.info("🔄 Scheduler started. Waiting for the 7th minute of every hour...")
+logging.info("🔄 Scheduler started. Waiting for the 15th minute of every hour...")
 
 # Keep the scheduler running
 while True:
